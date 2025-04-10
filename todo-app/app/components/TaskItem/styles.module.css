@@ -1,0 +1,29 @@
+.taskItem {
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.toggleBtn {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background-color: #ff6666;
+  border: none;
+  padding: 8px 12px;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+}

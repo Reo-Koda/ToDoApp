@@ -1,0 +1,22 @@
+.taskForm {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.taskInput {
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+}
+.addTask {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.taskList {
+  list-style: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
