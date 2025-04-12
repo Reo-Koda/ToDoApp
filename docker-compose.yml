@@ -1,11 +1,16 @@
 services:
   mysql:
-    build: ./mysql/
+    image: mysql:8.0
     volumes:
       - ./mysql/db:/docker-entrypoint-initdb.d # 初期データ
+      - todo_data:/var/lib/mysql
     environment:
       MYSQL_HOST: localhost
       MYSQL_ROOT_PASSWORD: todopass
       MYSQL_DATABASE: tododatabase
       MYSQL_USER: todouser
       MYSQL_PASSWORD: todopass
+      TZ: Asia/Tokyo
+
+volumes:
+  todo_data:
