@@ -1,4 +1,13 @@
 services:
+  app:
+    build: ./go
+    container_name: todo_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./go:/app
+    tty: true # コンテナが稼働し続ける設定
+
   mysql:
     image: mysql:8.0
     volumes:
