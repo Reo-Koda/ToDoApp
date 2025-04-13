@@ -1,7 +1,27 @@
+"use client";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import TaskItem from "./components/TaskItem";
 
+
 export default function Home() {
+  const [data, setData] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/status")
+    .then((res) => res.json())
+    .then((json) => setData(json))
+    .catch((err) => console.error("Error:", err));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/users")
+    .then((res) => res.json())
+    .then((json) => setUserData(json))
+    .catch((err) => console.error("Error:", err));
+  })
+
   return (
     <>
     <header>
@@ -9,6 +29,8 @@ export default function Home() {
     </header>
     
     <main>
+      {data ? <pre>{JSON.stringify(data, null, 1)}</pre> : "Loading..."}
+      {userData ? <pre>{JSON.stringify(userData, null, 1)}</pre> : "Loading..."}
       <form className={ styles.taskForm }>
         <input type="text" className={ styles.taskInput } placeholder="新しいタスクを入力" required />
         <button type="submit" className={ styles.addTask }>追加</button>

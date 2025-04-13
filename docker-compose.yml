@@ -16,7 +16,7 @@ services:
     environment:
       MYSQL_HOST: localhost
       MYSQL_ROOT_PASSWORD: todopass
-      MYSQL_DATABASE: tododatabase
+      MYSQL_DATABASE: todo_db
       MYSQL_USER: todouser
       MYSQL_PASSWORD: todopass
       TZ: Asia/Tokyo
