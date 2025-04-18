@@ -1,13 +1,21 @@
 import styles from "./styles.module.css";
 
 type Props = {
-  toggleModal: () => void;
+  toggleModal: () => void
+  users?: User[] | null
 }
 
-const Modal = ({ toggleModal }: Props) => {
+type User = {
+  user_name: string
+  password: string
+}
+
+const Modal = ({ toggleModal, users }: Props) => {
   return (
     <div className={ styles.overlay } onClick={ toggleModal }>
-      <div className={ styles.container } onClick={ (e) => e.stopPropagation() }></div>
+      <div className={ styles.container } onClick={ (e) => e.stopPropagation() }>
+        { users && <pre>{JSON.stringify(users, null, 1)}</pre> }
+      </div>
     </div>
   )
 }

@@ -1,9 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import styles from "./styles.module.css";
 import Modal from "../Modal";
 
-const TaskItem = () => {
+type Props = {
+  title: string
+  about: string
+  post_date: string
+  post_id: number
+}
+
+const TaskItem = ({ title, post_date, post_id }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -14,6 +21,31 @@ const TaskItem = () => {
     setIsComplete(!isComplete);
   }
 
+  const [message, setMessage] = useState('');
+  const deleteItem = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/api/posts/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          post_id: post_id,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(`データ削除 削除ID: ${ data.id }`);
+        window.location.reload();
+      } else {
+        setMessage(`エラー: ${ data.error }`);
+      }
+    } catch (error: any) {
+      setMessage(`通信エラー: ${ error.message }`);
+    }
+  }
+
   return (
     <>
     <li className={ styles.taskItem } onClick={ toggleModal }>
@@ -22,11 +54,18 @@ const TaskItem = () => {
         onClick={ (e) => {
           e.stopPropagation();
           toggleComplete();
-        } }>宿題</span>
-      <button className={ styles.deleteBtn } onClick={ (e) => e.stopPropagation() }>削除</button>
+        } }>{ title }</span>
+      <p>{ new Date(post_date).toLocaleString() }</p>
+      <button
+        className={ styles.deleteBtn }
+        onClick={ (e) => {
+          e.stopPropagation();
+          deleteItem();
+        } }>削除</button>
     </li>
-    { isOpen && <Modal toggleModal={ toggleModal } /> }
+    { message && <pre>{ message }</pre>  }
     
+    { isOpen && <Modal toggleModal={ toggleModal } /> }
     </>
   )
 }

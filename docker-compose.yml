@@ -6,6 +6,8 @@ services:
       - "8000:8000"
     volumes:
       - ./go:/app
+    environment:
+      TZ: Asia/Tokyo
     tty: true # コンテナが稼働し続ける設定
 
   mysql:

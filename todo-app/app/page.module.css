@@ -1,22 +1,70 @@
+.imgBox {
+  display: block;
+  height: 78px;
+  width: 78px;
+  border: 4px solid rgb(77, 77, 77);
+  border-radius: 50%;
+  padding: 10px;
+
+  position: fixed;
+  top: 20px;
+  right: 30px;
+}
+
+.imgBox2 {
+  display: block;
+  height: 78px;
+  width: 78px;
+  border: 4px solid rgb(77, 77, 77);
+  border-radius: 50%;
+  padding: 10px;
+
+  position: fixed;
+  top: 120px;
+  right: 30px;
+}
+
+.logoutImg {
+  height: 50px;
+  width: 50px;
+}
+
+.logoutTxt {
+  font-size: 10px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.projectTitle {
+  text-align: center;
+}
+
 .taskForm {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
+
 .taskInput {
   width: 60%;
   padding: 10px;
   font-size: 16px;
 }
+
 .addTask {
   padding: 10px 20px;
   font-size: 16px;
   margin-left: 10px;
   cursor: pointer;
 }
+
 .taskList {
   list-style: none;
   padding: 0;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.message {
+  text-align: center;
 }

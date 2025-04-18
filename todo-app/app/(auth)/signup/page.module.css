@@ -1,0 +1,21 @@
+.title {
+  text-align: center;
+}
+
+.inputContainer {
+  text-align: center;
+}
+
+.inputbox {
+  margin-top: 30px;
+  width: 30vw;
+  font-size: 20px;
+}
+
+.signUpBtn {
+  margin-top: 30px;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
