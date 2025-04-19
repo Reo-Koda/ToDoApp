@@ -64,7 +64,9 @@ const TaskItem = ({ title, about, post_date, post_id }: Props) => {
           e.stopPropagation();
           toggleComplete();
         } }>{ title }</span>
+      
       <p>{ new Date(post_date).toLocaleString() }</p>
+      
       <button
         className={ styles.deleteBtn }
         onClick={ (e) => {
