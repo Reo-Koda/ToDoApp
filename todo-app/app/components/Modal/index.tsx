@@ -49,7 +49,6 @@ const Modal = ({ toggleModal, users, title, about, post_id }: Props) => {
       const data = await res.json();
       if (res.ok) {
         setMessage(`データ変更 変更ID: ${ data.id }`);
-        toggleEdit();
         window.location.reload();
       } else {
         setMessage(`エラー: ${ data.error }`);

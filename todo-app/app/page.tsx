@@ -102,6 +102,7 @@ export default function Home() {
       <form className={ styles.taskForm } onSubmit={ handleSubmit }>
         <input
           type="text"
+          name="task"
           className={ styles.taskInput }
           placeholder="新しいタスクを入力"
           value={ title }
