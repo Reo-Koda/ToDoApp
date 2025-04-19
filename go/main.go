@@ -24,6 +24,12 @@ type Post struct {
 	PostDate time.Time `json:"post_date"`
 }
 
+type editItem struct {
+	Title string `json:"title"`
+	About string `json:"about"`
+	PostID int `json:"post_id"`
+}
+
 type deleteItem struct {
 	PostID int `json:"post_id"`
 }
@@ -66,12 +72,6 @@ func main() {
 
 	// CORSミドルウェアでフロントエンドからのリクエストを許可
 	e.Use(cors.Default())
-
-	// e.GET("/api/status", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"status": "success",
-	// 	})
-	// })
 
 	e.GET("/api/users", func(c *gin.Context) {
 		rows, err := db.Query("SELECT user_name, password FROM Users;")
@@ -128,15 +128,15 @@ func main() {
 	})
 
 	e.POST("/api/users/signup", func(c *gin.Context) {
-		var newuser User
+		var newUser User
 
-		if err := c.ShouldBindJSON(&newuser); err != nil {
+		if err := c.ShouldBindJSON(&newUser); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		var dbUserName string
-		err := db.QueryRow("SELECT user_name FROM Users WHERE user_name = ?", newuser.UserName).Scan(&dbUserName)
+		err := db.QueryRow("SELECT user_name FROM Users WHERE user_name = ?", newUser.UserName).Scan(&dbUserName)
 		if err == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "すでに存在する名前です"})
 			return
@@ -145,17 +145,78 @@ func main() {
 			return
 		}
 
-		_, err = db.Exec("INSERT INTO Users (user_name, password) VALUES (?, ?)", newuser.UserName, newuser.Password)
+		_, err = db.Exec("INSERT INTO Users (user_name, password) VALUES (?, ?)", newUser.UserName, newUser.Password)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "新規登録が正常に終了しました", "token": newuser.UserName})
+		c.JSON(http.StatusOK, gin.H{"message": "新規登録が正常に終了しました", "token": newUser.UserName})
+	})
+
+	e.POST("/api/users/delete", func(c *gin.Context) {
+		var deleteUser User
+
+		if err := c.ShouldBindJSON(&deleteUser); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// トランザクション処理
+		tx, err := db.Begin()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		if _, err := tx.Exec("DELETE FROM Posts WHERE user_name = ?", deleteUser.UserName); err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		result, err := tx.Exec("DELETE FROM Users WHERE user_name = ?", deleteUser.UserName)
+		if err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		rowsAffected, _ := result.RowsAffected()
+		if rowsAffected == 0 {
+			tx.Rollback()
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "該当するユーザーがありません",
+				// "id":      deleteUser.UserName,
+			})
+			return
+		}
+
+		// トランザクション処理終了
+		if err := tx.Commit(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "ユーザーと関連投稿が削除されました",
+			"id":      deleteUser.UserName,
+		})
 	})
 
 	e.GET("/api/posts", func(c *gin.Context) {
-		rows, err := db.Query("SELECT post_id, user_name, title, COALESCE(about, ''), post_date FROM Posts;")
+		uName := c.Query("user_name")
+
+		var rows *sql.Rows
+		var err error
+
+		if uName != "" {
+			rows, err = db.Query(`SELECT post_id, user_name, title, COALESCE(about, ''), post_date
+			FROM Posts
+			WHERE user_name = ?;`, uName)
+		} else {
+			rows, err = db.Query("SELECT post_id, user_name, title, COALESCE(about, ''), post_date FROM Posts;")
+		}
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -213,6 +274,29 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "データが追加されました", "id": id})
+	})
+
+	e.POST("/api/posts/edit", func(c *gin.Context) {
+		var editPost editItem
+
+		if err := c.ShouldBindJSON(&editPost); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		result, err := db.Exec("UPDATE Posts SET title = ?, about = ? WHERE post_id = ?", editPost.Title, editPost.About, editPost.PostID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		rowsAffected, _ := result.RowsAffected()
+    if rowsAffected == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "該当するデータがありません"})
+			return
+    }
+		
+		c.JSON(http.StatusOK, gin.H{"message": "データが変更されました", "id": editPost.PostID})
 	})
 
 	e.POST("/api/posts/delete", func(c *gin.Context) {

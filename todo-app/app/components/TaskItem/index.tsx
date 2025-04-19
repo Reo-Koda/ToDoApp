@@ -1,5 +1,5 @@
 "use client";
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import styles from "./styles.module.css";
 import Modal from "../Modal";
 
@@ -10,15 +10,23 @@ type Props = {
   post_id: number
 }
 
-const TaskItem = ({ title, post_date, post_id }: Props) => {
+const TaskItem = ({ title, about, post_date, post_id }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   }
 
-  const [isComplete, setIsComplete] = useState(false);
+  const [isComplete, setIsComplete] = useState<boolean>(() => {
+    const saved = localStorage.getItem(`complete:${post_id}`);
+    return saved === "true";
+  });
+
   const toggleComplete = () => {
-    setIsComplete(!isComplete);
+    setIsComplete(prev => {
+      const next = !prev;
+      localStorage.setItem(`complete:${post_id}`, String(next));
+      return next;
+    });
   }
 
   const [message, setMessage] = useState('');
@@ -37,6 +45,7 @@ const TaskItem = ({ title, post_date, post_id }: Props) => {
       const data = await res.json();
       if (res.ok) {
         setMessage(`データ削除 削除ID: ${ data.id }`);
+        localStorage.removeItem(`complete:${post_id}`);
         window.location.reload();
       } else {
         setMessage(`エラー: ${ data.error }`);
@@ -65,7 +74,7 @@ const TaskItem = ({ title, post_date, post_id }: Props) => {
     </li>
     { message && <pre>{ message }</pre>  }
     
-    { isOpen && <Modal toggleModal={ toggleModal } /> }
+    { isOpen && <Modal toggleModal={ toggleModal } title={ title } about={ about } post_id={ post_id } /> }
     </>
   )
 }

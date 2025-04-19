@@ -14,7 +14,6 @@ interface Post {
 
 export default function Home() {
   const router = useRouter();
-  // const [statusData, setStatusData] = useState(null);
   const [userData, setUserData] = useState(null);
   const [postData, setPostData] = useState<Post[]>([]);
   const [message, setMessage] = useState('');
@@ -36,13 +35,6 @@ export default function Home() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/api/status")
-  //   .then((res) => res.json())
-  //   .then((json) => setStatusData(json))
-  //   .catch((err) => console.error("Error:", err));
-  // }, []);
-
   useEffect(() => {
     fetch("http://localhost:8000/api/users")
     .then((res) => res.json())
@@ -51,11 +43,12 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/posts")
+    if (!userName) return;
+    fetch(`http://localhost:8000/api/posts?user_name=${ encodeURIComponent(userName) }`)
     .then((res) => res.json())
     .then((json) => setPostData(json.posts))
     .catch((err) => console.error("Error:", err));
-  }, [])
+  }, [userName])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,16 +88,17 @@ export default function Home() {
       <img className={ styles.logoutImg } src="/door.svg" alt="logoutImg" />
       <p className={ styles.logoutTxt }>ログアウト</p>
     </div>
-    <div className={ styles.imgBox2 } onClick={ toggleModal }>
-      <img className={ styles.logoutImg } src="/option.svg" alt="logoutImg" />
-      <p className={ styles.logoutTxt }>管理者</p>
-    </div>
+    { userName == 'Alice' &&
+      <div className={ styles.imgBox2 } onClick={ toggleModal }>
+        <img className={ styles.logoutImg } src="/option.svg" alt="logoutImg" />
+        <p className={ styles.logoutTxt }>管理者</p>
+      </div>
+    }
     { isOpen && <Modal  toggleModal={ toggleModal } users={ userData }/> }
 
     <h2 className={ styles.projectTitle }>{ userName ? `${ userName } プロジェクト` : "ログイン画面に遷移します..."}</h2>
     
     <main>
-      {/* { statusData ? <pre>{JSON.stringify(statusData, null, 1)}</pre> : "Now Loading..." } */}
       <form className={ styles.taskForm } onSubmit={ handleSubmit }>
         <input
           type="text"
@@ -115,11 +109,9 @@ export default function Home() {
           required />
         <button type="submit" className={ styles.addTask }>追加</button>
       </form>
-      {/* { postData ? <pre>{JSON.stringify(postData, null, 1)}</pre> : "Now Loading..." } */}
       { message && <pre className={ styles.message }>{ message }</pre> }
       
       <ul className={ styles.taskList }>
-        {/* タスクがここに追加される */}
         { postData && postData.map((data) => {
           return(
             <TaskItem title={ data.title } about={ data.about } post_date={ data.post_date } post_id={ data.post_id } key={ data.post_id } />
