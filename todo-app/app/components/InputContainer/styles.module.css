@@ -1,0 +1,16 @@
+.inputContainer {
+  text-align: center;
+}
+
+.submitBtn {
+  margin-top: 30px;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.backendMessage {
+  text-align: center;
+  font-weight: 700;
+}
