@@ -95,7 +95,7 @@ const Modal = ({ toggleModal, users, title, about, post_id }: Props) => {
               <div className={ styles.userContainer }>
                 <h2>{ data.user_name }</h2>
                 <h3>{ data.password }</h3>
-                { message && <pre>{ message }</pre> }
+                { message && <p className={ styles.backendMessage }>{ message }</p> }
               </div>
               <button
                 className={ styles.deleteBtn }
@@ -120,7 +120,7 @@ const Modal = ({ toggleModal, users, title, about, post_id }: Props) => {
                 value={ newAbout }
                 onChange={(e) => setNewAbout(e.target.value)} />
               <button type="submit" className={ styles.editBtn }>変更</button>
-              { message && <pre>{ message }</pre> }
+              { message && <p className={ styles.backendMessage }>{ message }</p> }
             </form>
             :
             <div className={ styles.editBox }>

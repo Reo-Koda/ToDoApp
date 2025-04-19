@@ -109,7 +109,7 @@ export default function Home() {
           required />
         <button type="submit" className={ styles.addTask }>追加</button>
       </form>
-      { message && <pre className={ styles.message }>{ message }</pre> }
+      { message && <p className={ styles.backendMessage }>{ message }</p> }
       
       <ul className={ styles.taskList }>
         { postData && postData.map((data) => {

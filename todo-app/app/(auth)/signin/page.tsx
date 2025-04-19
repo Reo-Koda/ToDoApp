@@ -58,8 +58,17 @@ const SignIn = () => {
       <br />
       <button type="submit" className={ styles.loginBtn }>ログイン</button>
     </form>
-    <Link href="/signup" className={ styles.signUp }>新規登録はこちらへ</Link>
-    { message && <p>{message}</p> }
+    <div className={ styles.signUpBox }>
+      <Link href="/signup" className={ styles.signUp }>新規登録はこちらへ</Link>
+    </div>
+    { message && <p className={ styles.backendMessage }>{ message }</p> }
+    <div className={ styles.warnContainer }>
+      <h3 className={ styles.warnCentense }>利用上の注意</h3>
+      <ul>
+        <li>セキュリティが強くないので個人情報などの重要な情報を入力するのは避けてください</li>
+        <li>アップデートによって告知なしに機能の追加、削除が行われる可能性があります</li>
+      </ul>
+    </div>
     </>
   )
 }

@@ -10,6 +10,7 @@
   margin-top: 30px;
   width: 30vw;
   font-size: 20px;
+  padding: 10px;
 }
 
 .signUpBtn {
@@ -18,4 +19,15 @@
   font-size: 16px;
   margin-left: 10px;
   cursor: pointer;
+}
+
+.backendMessage {
+  text-align: center;
+  font-weight: 700;
+}
+
+.warnContainer {
+  width: 50vw;
+  margin: 20px auto 0;
+  padding: 0 auto;
 }

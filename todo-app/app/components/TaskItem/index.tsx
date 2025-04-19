@@ -72,7 +72,7 @@ const TaskItem = ({ title, about, post_date, post_id }: Props) => {
           deleteItem();
         } }>削除</button>
     </li>
-    { message && <pre>{ message }</pre>  }
+    { message && <p className={ styles.backendMessage }>{ message }</p> }
     
     { isOpen && <Modal toggleModal={ toggleModal } title={ title } about={ about } post_id={ post_id } /> }
     </>
